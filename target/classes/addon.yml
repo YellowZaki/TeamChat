@@ -1,0 +1,33 @@
+name: TeamChat
+main: es.yellowzaki.teamchat.TeamChat
+version: 0.1-SNAPSHOT
+
+authors: YellowZaki
+
+softdepend: AcidIsland, BSkyBlock, CaveBlock, SkyGrid
+
+permissions:    
+  bskyblock.teamchat:
+    description: Let the player use the '/island teamchat' command
+    default: true
+  bskyblock.admin.teamchatspy:
+    description: Access team chat spy command
+    default: op
+  acidisland.teamchat:
+    description: Let the player use the '/island teamchat' command
+    default: true
+  acidisland.admin.teamchatspy:
+    description: Access team chat spy command
+    default: op
+  caveblock.teamchat:
+    description: Let the player use the '/island teamchat' command
+    default: true
+  caveblock.admin.teamchatspy:
+    description: Access team chat spy command
+    default: op    
+  skygrid.teamchat:
+    description: Let the player use the '/island teamchat' command
+    default: true
+  skygrid.admin.teamchatspy:
+    description: Access team chat spy command
+    default: op     
