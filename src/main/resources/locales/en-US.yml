@@ -1,13 +1,13 @@
 teamchat:
     general:
-        not-in-team: "You are not in a team."
-        no-members-online: "There is no member online."
-        enabled: "TeamChat toggled on."
-        disabled: "TeamChat toggled off."    
-        message: "[TeamChat] [player] > [message]"
-        spy: "[TeamChatSpy] [player] > [message]"
-        spyenabled: "You are now spying TeamChat"
-        spydisabled: "You are no longer spying TeamChat"
+        not-in-team: "&cYou are not in a team!"
+        no-members-online: "&cNone of your team are online!"
+        enabled: "&aTeamChat toggled on."
+        disabled: "&cTeamChat toggled off."    
+        message: "&5[TeamChat] &a[player] &5> &e[message]"
+        spy: "&8[TeamChatSpy] &7[player] > [message]"
+        spyenabled: "&aYou are now spying TeamChat."
+        spydisabled: "&cYou are no longer spying TeamChat."
     commands:   
         teamchat:
             parameters: ""
