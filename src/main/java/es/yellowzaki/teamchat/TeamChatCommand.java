@@ -4,7 +4,9 @@ import java.util.List;
 import java.util.UUID;
 import org.bukkit.Bukkit;
 import world.bentobox.bentobox.BentoBox;
+import world.bentobox.bentobox.api.addons.request.AddonRequestBuilder;
 import world.bentobox.bentobox.api.commands.CompositeCommand;
+import world.bentobox.bentobox.api.placeholders.placeholderapi.BentoBoxPlaceholderExpansion;
 import world.bentobox.bentobox.api.user.User;
 
 public class TeamChatCommand extends CompositeCommand {
@@ -17,10 +19,12 @@ public class TeamChatCommand extends CompositeCommand {
         super(addon, cmd, TEAMCHAT_COMMAND, "tc");
         this.plugin = this.getPlugin();
         this.addon = addon;
+        addon.addWorld(getWorld());
     }
 
     @Override
     public boolean execute(User user, String string, List<String> list) {
+
         UUID playerUUID = user.getUniqueId();
         // User has a team
         if (plugin.getIslands().inTeam(getWorld(), playerUUID)) {

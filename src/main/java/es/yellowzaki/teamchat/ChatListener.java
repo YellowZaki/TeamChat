@@ -7,6 +7,7 @@ import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 import org.bukkit.Bukkit;
+import org.bukkit.World;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -30,7 +31,7 @@ public class ChatListener implements Listener {
         this.plugin = addon.getPlugin();
     }
 
-    @EventHandler(priority = EventPriority.HIGHEST)
+    @EventHandler(priority = EventPriority.LOW)
     public void onTeamChat(AsyncPlayerChatEvent event) {
 
         Player player = event.getPlayer();
@@ -42,47 +43,50 @@ public class ChatListener implements Listener {
 
         event.setCancelled(true);
 
-        //MUNDOOOOOOOOOOOO
-        if (plugin.getIslands().inTeam(Util.getWorld(player.getWorld()), playerUUID)) {
+        // Send chat to every GameMode Addon world
+        for (World world : addon.getWorlds()) {
 
-            // Tell only the team members if they are online
-            boolean online = false;
-            for (UUID teamMember : plugin.getIslands().getMembers(Util.getWorld(player.getWorld()), playerUUID)) {
+            if (plugin.getIslands().inTeam(world, playerUUID)) {
 
-                if (plugin.getServer().getPlayer(teamMember) != null) {
-                    User teamPlayer = plugin.getPlayers().getUser(teamMember);
-                    teamPlayer.sendMessage("teamchat.general.message", "[player]", player.getDisplayName(), "[message]", event.getMessage());
-                    if (!teamMember.equals(playerUUID)) {
-                        online = true;
+                // Tell only the team members if they are online
+                boolean online = false;
+                for (UUID teamMember : plugin.getIslands().getMembers(world, playerUUID)) {
+
+                    if (plugin.getServer().getPlayer(teamMember) != null) {
+                        User teamPlayer = plugin.getPlayers().getUser(teamMember);
+                        teamPlayer.sendMessage("teamchat.general.message", "[player]", player.getName(), "[message]", event.getMessage());
+                        if (!teamMember.equals(playerUUID)) {
+                            online = true;
+                        }
+
                     }
 
                 }
 
-            }
+                // Disable team chat if no members online
+                if (!online) {
+                    User sender = plugin.getPlayers().getUser(playerUUID);
+                    sender.sendMessage("teamchat.general.no-members-online");
+                    sender.sendMessage("teamchat.general.disabled");
+                    unSetPlayer(playerUUID);
+                }
 
-            // Disable team chat if no members online
-            if (!online) {
+                // There are admin spying
+                if (!spies.isEmpty()) {
+                    for (Player onlinePlayer : plugin.getServer().getOnlinePlayers()) {
+                        if (isSpying(onlinePlayer.getUniqueId()) && !plugin.getIslands().getMembers(world, onlinePlayer.getUniqueId()).contains(playerUUID)) {
+                            User spier = plugin.getPlayers().getUser(onlinePlayer.getUniqueId());
+                            spier.sendMessage("teamchat.general.spy", "[player]", player.getName(), "[message]", event.getMessage());
+                        }
+                    }
+                }
+
+            } else {
                 User sender = plugin.getPlayers().getUser(playerUUID);
-                sender.sendMessage("teamchat.general.no-members-online");
+                sender.sendMessage("teamchat.general.not-in-team");
                 sender.sendMessage("teamchat.general.disabled");
                 unSetPlayer(playerUUID);
             }
-
-            // There are admin spying
-            if (!spies.isEmpty()) {
-                for (Player onlinePlayer : plugin.getServer().getOnlinePlayers()) {
-                    if (isSpying(onlinePlayer.getUniqueId()) && !plugin.getIslands().getMembers(Util.getWorld(onlinePlayer.getWorld()), onlinePlayer.getUniqueId()).contains(playerUUID)) {
-                        User spier = plugin.getPlayers().getUser(onlinePlayer.getUniqueId());
-                        spier.sendMessage("teamchat.general.spy", "[player]", player.getDisplayName(), "[message]", event.getMessage());
-                    }
-                }
-            }
-
-        } else {
-            User sender = plugin.getPlayers().getUser(playerUUID);
-            sender.sendMessage("teamchat.general.not-in-team");
-            sender.sendMessage("teamchat.general.disabled");
-            unSetPlayer(playerUUID);
         }
 
     }
